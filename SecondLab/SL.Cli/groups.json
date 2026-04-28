@@ -1,0 +1,245 @@
+[
+  {
+    "Name": "NP-23-44-1213",
+    "Year": 3,
+    "IsBusy": false,
+    "Students": [
+      {
+        "FirstName": "Kirill",
+        "LastName": "Ivanenko",
+        "CompletedWorks": [],
+        "Id": "efad4d0c-9112-409b-a2bf-6067debc5109",
+        "CreatedAt": "2026-04-03T05:34:31.2059677Z"
+      }
+    ],
+    "CompletedWorks": [],
+    "GradeBook": {},
+    "Size": 1,
+    "SubgroupSize": 0,
+    "Id": "9dc30e7e-53bc-4ff0-8161-19412eff0cb0",
+    "CreatedAt": "2026-04-03T05:32:33.8412222Z"
+  },
+  {
+    "Name": "MP-23-4567-12",
+    "Year": 2,
+    "IsBusy": false,
+    "Students": [
+      {
+        "FirstName": "Alexander",
+        "LastName": "Semanenko",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "98fc589a-5fe2-4699-a83d-00e6bf4d5a96",
+        "CreatedAt": "2026-04-03T05:32:33.8541193Z"
+      },
+      {
+        "FirstName": "Rick",
+        "LastName": "Grimes",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "ce7938cb-7600-44ac-9e26-503e3ad580b5",
+        "CreatedAt": "2026-04-03T05:32:33.854296Z"
+      },
+      {
+        "FirstName": "Ben ",
+        "LastName": "Poindexter",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "d4417b09-d25f-4ed4-b656-c0749386b85a",
+        "CreatedAt": "2026-04-03T05:32:33.854306Z"
+      },
+      {
+        "FirstName": "Egor",
+        "LastName": "Klimenko",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "08fa7f54-bbd7-4d05-bcd9-98ded4fe85d4",
+        "CreatedAt": "2026-04-03T05:32:33.8543134Z"
+      },
+      {
+        "FirstName": "dd",
+        "LastName": "ds",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "67e6baf1-fe94-4b1a-a1c6-c14becb9ad37",
+        "CreatedAt": "2026-04-03T05:32:33.8543206Z"
+      },
+      {
+        "FirstName": "Hershel",
+        "LastName": "Morales",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "c44d2a69-a60a-4d7e-94f8-20e693abc034",
+        "CreatedAt": "2026-04-03T05:32:33.8543285Z"
+      },
+      {
+        "FirstName": "Frank",
+        "LastName": "Castle",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "d1ece169-3de8-4739-846b-8d27a9947c88",
+        "CreatedAt": "2026-04-03T05:32:33.8543357Z"
+      },
+      {
+        "FirstName": "Matt ",
+        "LastName": "Murdock",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "4fbbe36f-43ce-4cd0-a583-6ebd785e5a41",
+        "CreatedAt": "2026-04-03T05:32:33.8543423Z"
+      },
+      {
+        "FirstName": "Roody",
+        "LastName": "Coper",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "0fa4370d-325a-448c-a209-1a126ce625b9",
+        "CreatedAt": "2026-04-03T05:32:33.8543494Z"
+      },
+      {
+        "FirstName": "Nikolas",
+        "LastName": "Simanenko",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "09834d47-48ed-4a4a-b4b7-25b226caf9b9",
+        "CreatedAt": "2026-04-03T05:32:33.8543566Z"
+      },
+      {
+        "FirstName": "Marcus",
+        "LastName": "Aurelius",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "0b57ad98-d5b6-46f4-943e-e1cbe5549f19",
+        "CreatedAt": "2026-04-03T05:32:33.8543637Z"
+      },
+      {
+        "FirstName": "Franz",
+        "LastName": "Kafka",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "c701d6a6-bf3f-4c3d-b52e-e5595bb5d05b",
+        "CreatedAt": "2026-04-03T05:32:33.8543703Z"
+      },
+      {
+        "FirstName": "Karl",
+        "LastName": "Kraft",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "699fcd00-45b2-4fb0-8458-9ef5156acfa3",
+        "CreatedAt": "2026-04-03T05:32:33.8543772Z"
+      },
+      {
+        "FirstName": "Otman",
+        "LastName": "Owl",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "eb58eb59-98b8-4599-95da-d6f607b93e30",
+        "CreatedAt": "2026-04-03T05:32:33.854384Z"
+      },
+      {
+        "FirstName": "Roman",
+        "LastName": "Bearman",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "dcf0e4f4-a28d-457c-b9ab-e942e47a06d4",
+        "CreatedAt": "2026-04-03T05:32:33.8543908Z"
+      },
+      {
+        "FirstName": "Richard ",
+        "LastName": "Lionheart",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "add75d60-78ad-4bed-8995-85959532f42c",
+        "CreatedAt": "2026-04-03T05:32:33.8543977Z"
+      },
+      {
+        "FirstName": "John",
+        "LastName": "Nimura",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "d275012a-b974-4766-bba3-4c15302e52dc",
+        "CreatedAt": "2026-04-03T05:32:33.8544043Z"
+      },
+      {
+        "FirstName": "Jonathan",
+        "LastName": "Goldberg",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "1edbfccb-b0ec-4bab-88c6-56743ac6c35b",
+        "CreatedAt": "2026-04-03T05:32:33.8544115Z"
+      },
+      {
+        "FirstName": "Lester",
+        "LastName": "Numb",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "695acfec-246c-4118-89bf-78ae5fd8c9de",
+        "CreatedAt": "2026-04-03T05:32:33.8544187Z"
+      },
+      {
+        "FirstName": "David",
+        "LastName": "Morrissey",
+        "CompletedWorks": [
+          "Software Architecture: Lab Work",
+          "English: Speaking"
+        ],
+        "Id": "590662c0-f27b-4b39-8d8c-c0107747ffb7",
+        "CreatedAt": "2026-04-03T05:32:33.8544255Z"
+      }
+    ],
+    "CompletedWorks": [
+      "Software Architecture: Lecture",
+      "Software Architecture: Lab Work",
+      "English: Practice",
+      "English: Speaking",
+      "Software Architecture: Lab Work",
+      "English: Speaking"
+    ],
+    "GradeBook": {
+      "Software Architecture": 69,
+      "English": 100
+    },
+    "Size": 20,
+    "SubgroupSize": 10,
+    "Id": "1ea908cf-d173-4ad8-9ddd-0a85b1fab5d1",
+    "CreatedAt": "2026-04-03T05:32:33.8534591Z"
+  }
+]

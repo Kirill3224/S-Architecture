@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SL.App/SL.App.csproj" />
+  <Project Path="SL.Cli/SL.Cli.csproj" />
+  <Project Path="SL.Domain/SL.Domain.csproj" />
+  <Project Path="SL.Infra/SL.Infra.csproj" />
+</Solution>
