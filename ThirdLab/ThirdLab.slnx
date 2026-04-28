@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TL.BLL/TL.BLL.csproj" />
+  <Project Path="TL.DAL/TL.DAL.csproj" />
+  <Project Path="TL.PL/TL.PL.csproj" />
+</Solution>
