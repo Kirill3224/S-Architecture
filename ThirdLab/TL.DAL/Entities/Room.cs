@@ -6,6 +6,7 @@ public class Room : BaseEntity
 {
     public string Number { get; private set; } = null!;
     public RoomStatus Status { get; private set; }
+    public RoomCategory Category { get; private set; } = null!;
     public Guid CategoryId { get; private set; }
 
     protected Room() { }
