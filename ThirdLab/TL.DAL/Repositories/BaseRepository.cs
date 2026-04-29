@@ -5,7 +5,7 @@ using TL.DAL.Persistence;
 
 namespace TL.DAL.Repositories;
 
-public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
