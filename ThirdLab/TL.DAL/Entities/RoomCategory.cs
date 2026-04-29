@@ -17,7 +17,7 @@ public class RoomCategory : BaseEntity
         PricePerNight = pricePerNight;
     }
 
-    public RoomCategory Create(string name, decimal pricePerNight)
+    public static RoomCategory Create(string name, decimal pricePerNight)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name is required.", nameof(name));

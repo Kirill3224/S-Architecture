@@ -18,7 +18,7 @@ public class Booking : BaseEntity
         EndDate = endDate;
     }
 
-    public Booking Create(Guid roomId, string guestName, DateTime startDate, DateTime endDate)
+    public static Booking Create(Guid roomId, string guestName, DateTime startDate, DateTime endDate)
     {
         if (string.IsNullOrWhiteSpace(guestName))
             throw new ArgumentException("Guest name is required", nameof(guestName));
