@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TL.DAL.Entities;
 
 namespace TL.DAL.Persistence;
 
@@ -8,6 +9,10 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
+
+    public DbSet<RoomCategory> Categories { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
