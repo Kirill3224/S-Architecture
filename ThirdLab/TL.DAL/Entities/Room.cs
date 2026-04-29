@@ -8,10 +8,14 @@ public class Room : BaseEntity
     public RoomStatus Status { get; private set; }
     public RoomCategory Category { get; private set; } = null!;
     public Guid CategoryId { get; private set; }
+    public ICollection<Booking> Bookings { get; private set; }
 
-    protected Room() { }
+    protected Room()
+    {
+        Bookings = new List<Booking>();
+    }
 
-    private Room(string number, Guid categoryId, RoomStatus status = RoomStatus.Free)
+    private Room(string number, Guid categoryId, RoomStatus status = RoomStatus.Free) : this()
     {
         Number = number;
         CategoryId = categoryId;

@@ -4,7 +4,7 @@ public class RoomCategory : BaseEntity
 {
     public string Name { get; private set; } = null!;
     public decimal PricePerNight { get; private set; }
-    public ICollection<Room> Rooms { get; private set; } = null!;
+    public ICollection<Room> Rooms { get; private set; }
 
     protected RoomCategory()
     {
