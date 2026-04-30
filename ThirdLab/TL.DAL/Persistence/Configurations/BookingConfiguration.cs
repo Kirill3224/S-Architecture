@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TL.DAL.Entities;
 
-namespace TL.DAL.Configurations;
+namespace TL.DAL.Persistence.Configurations;
 
 public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 {
