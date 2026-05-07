@@ -30,4 +30,13 @@ public class Room : BaseEntity
         return new Room(number, categoryId, status);
     }
 
+    public void MarkAsBooked()
+    {
+        Status = RoomStatus.Booked;
+    }
+
+    public void MarkAsFree()
+    {
+        Status = RoomStatus.Free;
+    }
 }

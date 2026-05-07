@@ -10,15 +10,16 @@ public class Booking : BaseEntity
 
     protected Booking() { }
 
-    private Booking(Guid roomId, string guestName, DateTime startDate, DateTime endDate)
+    private Booking(Room room, string guestName, DateTime startDate, DateTime endDate)
     {
-        RoomId = roomId;
+        Room = room;
+        RoomId = room.Id;
         GuestName = guestName;
         StartDate = startDate;
         EndDate = endDate;
     }
 
-    public static Booking Create(Guid roomId, string guestName, DateTime startDate, DateTime endDate)
+    public static Booking Create(Room room, string guestName, DateTime startDate, DateTime endDate)
     {
         if (string.IsNullOrWhiteSpace(guestName))
             throw new ArgumentException("Guest name is required", nameof(guestName));
@@ -29,6 +30,8 @@ public class Booking : BaseEntity
         if (startDate < DateTime.UtcNow.Date)
             throw new ArgumentException("Start date cannot be in the past.", nameof(startDate));
 
-        return new Booking(roomId, guestName, startDate, endDate);
+        return new Booking(room, guestName, startDate, endDate);
     }
+
+
 }
