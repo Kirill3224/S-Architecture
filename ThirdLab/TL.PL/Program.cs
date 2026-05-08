@@ -5,6 +5,7 @@ using FluentValidation.AspNetCore;
 using TL.DAL.Persistence;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using TL.PL.Middleware;
 
 Env.TraversePath().Load();
 
@@ -13,10 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 var connectionString = $"Host={Env.GetString("DB_HOST", "localhost")};" +
-                       $"Port={Env.GetString("DB_PORT", "5432")};" +
-                       $"Database={Env.GetString("POSTGRES_DB", "ThirdLabDb")};" +
-                       $"Username={Env.GetString("POSTGRES_USER")};" +
-                       $"Password={Env.GetString("POSTGRES_PASSWORD")};";
+                    $"Port={Env.GetString("DB_PORT", "5432")};" +
+                    $"Database={Env.GetString("POSTGRES_DB", "ThirdLabDb")};" +
+                    $"Username={Env.GetString("POSTGRES_USER")};" +
+                    $"Password={Env.GetString("POSTGRES_PASSWORD")};";
 
 builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
 
@@ -27,7 +28,6 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddApplication();
@@ -36,17 +36,24 @@ builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
     try
     {
+        logger.LogInformation("Starting database migration...");
         await context.Database.MigrateAsync();
-        Console.WriteLine("Database migrated successfully.");
+        logger.LogInformation("Database migrated successfully.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Migration failed: {ex.Message}");
+        logger.LogCritical(ex, "An error occurred while migrating the database.");
+        throw;
     }
 }
 
