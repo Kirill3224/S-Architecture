@@ -64,7 +64,7 @@ public class RoomCategoryService : IRoomCategoryService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<RoomCategoryResponse?> GetRoomByIdAsync(Guid roomCategoryId)
+    public async Task<RoomCategoryResponse?> GetByIdAsync(Guid roomCategoryId)
     {
         var category = await _unitOfWork.Categories.GetByIdAsync(roomCategoryId)
                         ?? throw new KeyNotFoundException($"Category with ID {roomCategoryId} is not found.");

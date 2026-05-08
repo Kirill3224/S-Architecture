@@ -55,10 +55,7 @@ public class RoomService : IRoomService
             hasChanges = true;
         }
 
-        if (!hasChanges)
-        {
-            return;
-        }
+        if (!hasChanges) return;
 
         _unitOfWork.Rooms.Update(room);
         await _unitOfWork.SaveChangesAsync();
@@ -75,7 +72,7 @@ public class RoomService : IRoomService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<RoomResponse?> GetRoomByIdAsync(Guid roomId)
+    public async Task<RoomResponse?> GetByIdAsync(Guid roomId)
     {
         var room = await _unitOfWork.Rooms.GetWithCategoryAsync(roomId)
                     ?? throw new KeyNotFoundException($"Room with ID {roomId} is not found.");

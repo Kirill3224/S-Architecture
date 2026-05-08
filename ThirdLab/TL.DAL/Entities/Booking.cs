@@ -33,5 +33,20 @@ public class Booking : BaseEntity
         return new Booking(room, guestName, startDate, endDate);
     }
 
+    public void CorrectGuestName(string newName)
+    {
+        GuestName = newName;
+    }
+
+    public void CorrectStartDate(DateTime newStartDate)
+    {
+        StartDate = newStartDate;
+    }
+
+    public void CorrectEndDate(DateTime newEndDate)
+    {
+        EndDate = newEndDate;
+    }
+
 
 }
