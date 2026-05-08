@@ -26,4 +26,14 @@ public class RoomCategory : BaseEntity
 
         return new RoomCategory(name, pricePerNight);
     }
+
+    public void CorrectName(string newName)
+    {
+        Name = newName;
+    }
+
+    public void CorrectPrice(decimal newPrice)
+    {
+        PricePerNight = newPrice;
+    }
 }

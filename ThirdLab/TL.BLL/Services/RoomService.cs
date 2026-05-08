@@ -36,12 +36,8 @@ public class RoomService : IRoomService
 
     public async Task UpdateAsync(UpdateRoomRequest request)
     {
-        var room = await _unitOfWork.Rooms.GetByIdAsync(request.Id);
-
-        if (room is null)
-        {
-            throw new KeyNotFoundException($"Room with ID {request.Id} not found.");
-        }
+        var room = await _unitOfWork.Rooms.GetByIdAsync(request.Id)
+                    ?? throw new KeyNotFoundException($"Room with ID {request.Id} is not found.");
 
         var status = Enum.Parse<RoomStatus>(request.Status, ignoreCase: true);
 
@@ -70,12 +66,10 @@ public class RoomService : IRoomService
 
     public async Task DeleteAsync(Guid roomId)
     {
-        var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+        var room = await _unitOfWork.Rooms.GetByIdAsync(roomId)
+                    ?? throw new KeyNotFoundException($"Room with ID {roomId} is not found.");
 
-        if (room is null)
-        {
-            throw new KeyNotFoundException($"Room with ID {roomId} not found.");
-        }
+
 
         _unitOfWork.Rooms.Delete(room);
         await _unitOfWork.SaveChangesAsync();
@@ -83,12 +77,8 @@ public class RoomService : IRoomService
 
     public async Task<RoomResponse?> GetRoomByIdAsync(Guid roomId)
     {
-        var room = await _unitOfWork.Rooms.GetWithCategoryAsync(roomId);
-
-        if (room is null)
-        {
-            throw new KeyNotFoundException($"Room with ID {roomId} not found.");
-        }
+        var room = await _unitOfWork.Rooms.GetWithCategoryAsync(roomId)
+                    ?? throw new KeyNotFoundException($"Room with ID {roomId} is not found.");
 
         return _mapper.Map<RoomResponse>(room);
     }
