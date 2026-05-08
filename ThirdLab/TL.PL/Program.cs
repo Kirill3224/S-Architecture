@@ -1,27 +1,56 @@
-﻿using DotNetEnv;
+using TL.DAL;
+using TL.BLL;
+using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using TL.DAL.Persistence;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 Env.TraversePath().Load();
 
-var dbHost = Env.GetString("DB_HOST", "localhost");
-var dbPort = Env.GetString("DB_PORT", "5432");
-var dbUser = Env.GetString("POSTGRES_USER");
-var dbPass = Env.GetString("POSTGRES_PASSWORD");
-var dbName = Env.GetString("POSTGRES_DB", "ThirdLabDb");
+var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};";
+builder.Configuration.AddEnvironmentVariables();
 
-var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-optionsBuilder.UseNpgsql(connectionString);
+var connectionString = $"Host={Env.GetString("DB_HOST", "localhost")};" +
+                       $"Port={Env.GetString("DB_PORT", "5432")};" +
+                       $"Database={Env.GetString("POSTGRES_DB", "ThirdLabDb")};" +
+                       $"Username={Env.GetString("POSTGRES_USER")};" +
+                       $"Password={Env.GetString("POSTGRES_PASSWORD")};";
 
-using var context = new AppDbContext(optionsBuilder.Options);
+builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
 
-try
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddApplication();
+
+builder.Services.AddFluentValidationAutoValidation();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    context.Database.Migrate();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        await context.Database.MigrateAsync();
+        Console.WriteLine("Database migrated successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Migration failed: {ex.Message}");
+    }
 }
-catch (Exception ex)
-{
-    Console.WriteLine(ex.Message);
-}
+
+app.UseHttpsRedirection();
+app.MapControllers();
+
+app.Run();
