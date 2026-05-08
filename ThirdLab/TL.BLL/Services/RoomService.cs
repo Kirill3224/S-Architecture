@@ -8,28 +8,23 @@ using FluentValidation;
 
 namespace TL.BLL.Services;
 
-public class RoomService : IRoomService
+public class RoomService : BaseService, IRoomService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IValidator<CreateRoomRequest> _createValidator;
-    private readonly IValidator<UpdateRoomRequest> _updateValidator;
 
     public RoomService(
         IUnitOfWork unitOfWork,
         IMapper mapper,
-        IValidator<CreateRoomRequest> createValidator,
-        IValidator<UpdateRoomRequest> updateValidator)
+        IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
 
     public async Task<Guid> CreateAsync(CreateRoomRequest request)
     {
-        await _createValidator.ValidateAndThrowAsync(request);
+        await ValidateAsync(request);
 
         var status = Enum.Parse<RoomStatus>(request.Status, ignoreCase: true);
 
@@ -47,7 +42,7 @@ public class RoomService : IRoomService
 
     public async Task UpdateAsync(UpdateRoomRequest request)
     {
-        await _updateValidator.ValidateAndThrowAsync(request);
+        await ValidateAsync(request);
 
         var room = await _unitOfWork.Rooms.GetByIdAsync(request.Id)
                     ?? throw new KeyNotFoundException($"Room with ID {request.Id} is not found.");

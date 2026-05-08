@@ -6,12 +6,15 @@ using TL.DAL.Entities;
 
 namespace TL.BLL.Services;
 
-public class HotelService : IHotelService
+public class HotelService : BaseService, IHotelService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public HotelService(IUnitOfWork unitOfWork, IMapper mapper)
+    public HotelService(
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,6 +29,8 @@ public class HotelService : IHotelService
 
     public async Task<BookingResponse> BookRoomAsync(BookRoomRequest request)
     {
+        await ValidateAsync(request);
+
         bool isOccupied = await _unitOfWork.Bookings.HasOverlappingBookingAsync(
             request.RoomId, request.StartDate, request.EndDate);
 

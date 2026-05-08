@@ -4,14 +4,17 @@ using TL.BLL.DTOs;
 using TL.DAL.Entities;
 using AutoMapper;
 
-namespace Tl.BLL.Services;
+namespace TL.BLL.Services;
 
-public class BookingService : IBookingService
+public class BookingService : BaseService, IBookingService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public BookingService(IUnitOfWork unitOfWork, IMapper mapper)
+    public BookingService(
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -19,6 +22,8 @@ public class BookingService : IBookingService
 
     public async Task<Guid> CreateAsync(CreateBookingRequest request)
     {
+        await ValidateAsync(request);
+
         var room = await _unitOfWork.Rooms.GetByIdAsync(request.RoomId)
                ?? throw new KeyNotFoundException($"Room with ID {request.RoomId} is not found.");
 
@@ -37,6 +42,8 @@ public class BookingService : IBookingService
 
     public async Task UpdateAsync(UpdateBookingRequest request)
     {
+        await ValidateAsync(request);
+
         var booking = await _unitOfWork.Bookings.GetByIdAsync(request.Id)
                         ?? throw new KeyNotFoundException($"Booking with ID {request.Id} is not found.");
 

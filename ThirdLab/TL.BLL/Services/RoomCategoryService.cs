@@ -6,12 +6,15 @@ using AutoMapper;
 
 namespace TL.BLL.Services;
 
-public class RoomCategoryService : IRoomCategoryService
+public class RoomCategoryService : BaseService, IRoomCategoryService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public RoomCategoryService(IUnitOfWork unitOfWork, IMapper mapper)
+    public RoomCategoryService(
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -19,6 +22,8 @@ public class RoomCategoryService : IRoomCategoryService
 
     public async Task<Guid> CreateAsync(CreateRoomCategoryRequest request)
     {
+        await ValidateAsync(request);
+
         var category = RoomCategory.Create(
             request.Name,
             request.PricePerNight
@@ -32,6 +37,8 @@ public class RoomCategoryService : IRoomCategoryService
 
     public async Task UpdateAsync(UpdateRoomCategoryRequest request)
     {
+        await ValidateAsync(request);
+
         var category = await _unitOfWork.Categories.GetByIdAsync(request.Id)
                         ?? throw new KeyNotFoundException($"Category with ID {request.Id} is not found.");
 
