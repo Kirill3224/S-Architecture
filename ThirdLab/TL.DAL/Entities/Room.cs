@@ -39,4 +39,14 @@ public class Room : BaseEntity
     {
         Status = RoomStatus.Free;
     }
+
+    public void CorrectNumber(string newNumber)
+    {
+        Number = newNumber;
+    }
+
+    public void CorrectStatus(RoomStatus newStatus)
+    {
+        Status = newStatus;
+    }
 }
