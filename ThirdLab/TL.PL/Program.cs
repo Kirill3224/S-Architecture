@@ -1,11 +1,12 @@
 using TL.DAL;
 using TL.BLL;
 using System.Text.Json.Serialization;
-using FluentValidation.AspNetCore;
 using TL.DAL.Persistence;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using TL.PL.Middleware;
+using FluentValidation;
+using TL.BLL.Interfaces;
 
 Env.TraversePath().Load();
 
@@ -32,7 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddApplication();
 
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<IRoomCategoryService>();
 
 var app = builder.Build();
 
