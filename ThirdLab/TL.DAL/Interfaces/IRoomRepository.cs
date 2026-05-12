@@ -5,5 +5,6 @@ namespace TL.DAL.Interfaces;
 public interface IRoomRepository : IBaseRepository<Room>
 {
     Task<Room?> GetWithCategoryAsync(Guid id);
+    Task<IEnumerable<Room>> GetAllWithCategoryAsync();
     Task<IEnumerable<Room>> GetAvailableRoomsAsync(DateTime startDate, DateTime endDate);
 }

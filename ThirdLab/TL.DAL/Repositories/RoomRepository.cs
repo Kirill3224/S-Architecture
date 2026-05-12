@@ -16,6 +16,13 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository
                 .FirstOrDefaultAsync(r => r.Id == id);
     }
 
+    public async Task<IEnumerable<Room>> GetAllWithCategoryAsync()
+    {
+        return await _dbSet
+                .Include(r => r.Category)
+                .ToListAsync();
+    }
+
     public async Task<IEnumerable<Room>> GetAvailableRoomsAsync(DateTime startDate, DateTime endDate)
     {
         return await _dbSet

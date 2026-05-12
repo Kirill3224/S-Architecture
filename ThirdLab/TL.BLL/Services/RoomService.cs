@@ -90,7 +90,7 @@ public class RoomService : BaseService, IRoomService
 
     public async Task<List<RoomResponse>> GetAllAsync()
     {
-        var rooms = await _unitOfWork.Rooms.GetAllAsync();
+        var rooms = await _unitOfWork.Rooms.GetAllWithCategoryAsync();
 
         return _mapper.Map<List<RoomResponse>>(rooms);
     }
