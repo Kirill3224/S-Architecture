@@ -44,15 +44,15 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
 
         bool hasChanges = false;
 
-        if (request.Name != category.Name)
+        if (request.Name != null && request.Name != category.Name)
         {
             category.CorrectName(request.Name);
             hasChanges = true;
         }
 
-        if (request.PricePerNight != category.PricePerNight)
+        if (request.PricePerNight != null && request.PricePerNight.Value != category.PricePerNight)
         {
-            category.CorrectPrice(request.PricePerNight);
+            category.CorrectPrice(request.PricePerNight.Value);
             hasChanges = true;
         }
 

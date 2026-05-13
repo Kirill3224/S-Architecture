@@ -30,7 +30,7 @@ public class CategoriesController : ControllerBase
         return Ok(new { message = "Category deleted successfully." });
     }
 
-    [HttpPut]
+    [HttpPatch]
     public async Task<IActionResult> Update(UpdateRoomCategoryRequest request)
     {
         await _categoryService.UpdateAsync(request);
