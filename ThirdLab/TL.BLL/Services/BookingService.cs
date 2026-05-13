@@ -20,9 +20,18 @@ public class BookingService : BaseService, IBookingService
         _mapper = mapper;
     }
 
-    public async Task<Guid> CreateAsync(CreateBookingRequest request)
+    public async Task<BookingResponse> CreateAsync(CreateBookingRequest request)
     {
         await ValidateAsync(request);
+
+        var startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+        var endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
+
+        bool isOccupied = await _unitOfWork.Bookings.HasOverlappingBookingAsync(
+                                request.RoomId, startDate, endDate);
+
+        if (isOccupied)
+            throw new InvalidOperationException("This room is already taken by someone else.");
 
         var room = await _unitOfWork.Rooms.GetByIdAsync(request.RoomId)
                ?? throw new KeyNotFoundException($"Room with ID {request.RoomId} is not found.");
@@ -30,14 +39,16 @@ public class BookingService : BaseService, IBookingService
         var booking = Booking.Create(
             room,
             request.GuestName,
-            request.StartDate,
-            request.EndDate
+            startDate,
+            endDate
         );
+
+        room.MarkAsBooked();
 
         await _unitOfWork.Bookings.AddAsync(booking);
         await _unitOfWork.SaveChangesAsync();
 
-        return booking.Id;
+        return _mapper.Map<BookingResponse>(booking);
     }
 
     public async Task UpdateAsync(UpdateBookingRequest request)
@@ -78,6 +89,10 @@ public class BookingService : BaseService, IBookingService
         var booking = await _unitOfWork.Bookings.GetByIdAsync(bookingId)
                 ?? throw new KeyNotFoundException($"Booking with ID {bookingId} is not found.");
 
+        var room = await _unitOfWork.Rooms.GetByIdAsync(booking.RoomId);
+
+        room?.MarkAsFree();
+
         _unitOfWork.Bookings.Delete(booking);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -95,6 +110,18 @@ public class BookingService : BaseService, IBookingService
         var bookings = await _unitOfWork.Bookings.GetBookingsByRoomAsync(roomId);
 
         return _mapper.Map<List<BookingResponse>>(bookings);
+    }
+
+    public async Task<IEnumerable<RoomResponse>> GetAvailableRoomsAsync(SearchAvailableRoomsRequest request)
+    {
+        await ValidateAsync(request);
+
+        var startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+        var endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
+
+        var rooms = await _unitOfWork.Rooms.GetAvailableRoomsAsync(startDate, endDate);
+
+        return _mapper.Map<IEnumerable<RoomResponse>>(rooms);
     }
 
     public async Task<List<BookingResponse>> GetAllAsync()

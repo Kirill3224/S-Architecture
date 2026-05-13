@@ -82,7 +82,7 @@ public class RoomService : BaseService, IRoomService
 
     public async Task<RoomResponse?> GetByIdAsync(Guid roomId)
     {
-        var room = await _unitOfWork.Rooms.GetWithCategoryAsync(roomId)
+        var room = await _unitOfWork.Rooms.GetByIdAsync(roomId)
                     ?? throw new KeyNotFoundException($"Room with ID {roomId} is not found.");
 
         return _mapper.Map<RoomResponse>(room);
@@ -90,7 +90,7 @@ public class RoomService : BaseService, IRoomService
 
     public async Task<List<RoomResponse>> GetAllAsync()
     {
-        var rooms = await _unitOfWork.Rooms.GetAllWithCategoryAsync();
+        var rooms = await _unitOfWork.Rooms.GetAllAsync();
 
         return _mapper.Map<List<RoomResponse>>(rooms);
     }

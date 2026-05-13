@@ -1,7 +1,8 @@
 namespace TL.BLL.DTOs;
 
-public record RoomCategoryResponse(
-    Guid Id,
-    string Name,
-    decimal PricePerNight
-);
+public record RoomCategoryResponse
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = null!;
+    public decimal PricePerNight { get; init; }
+}

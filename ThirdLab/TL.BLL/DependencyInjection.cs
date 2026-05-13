@@ -12,7 +12,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IHotelService, HotelService>();
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IRoomCategoryService, RoomCategoryService>();
         services.AddScoped<IBookingService, BookingService>();

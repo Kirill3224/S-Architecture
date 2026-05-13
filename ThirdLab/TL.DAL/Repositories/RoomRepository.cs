@@ -9,18 +9,18 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository
 {
     public RoomRepository(AppDbContext context) : base(context) { }
 
-    public async Task<Room?> GetWithCategoryAsync(Guid id)
+    public override async Task<IEnumerable<Room>> GetAllAsync()
     {
         return await _dbSet
-                .Include(r => r.Category)
-                .FirstOrDefaultAsync(r => r.Id == id);
+            .Include(b => b.Category)
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<Room>> GetAllWithCategoryAsync()
+    public override async Task<Room?> GetByIdAsync(Guid id)
     {
         return await _dbSet
-                .Include(r => r.Category)
-                .ToListAsync();
+            .Include(r => r.Category)
+            .FirstOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task<IEnumerable<Room>> GetAvailableRoomsAsync(DateTime startDate, DateTime endDate)

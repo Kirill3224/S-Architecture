@@ -9,6 +9,14 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
 {
     public BookingRepository(AppDbContext context) : base(context) { }
 
+    public override async Task<IEnumerable<Booking>> GetAllAsync()
+    {
+        return await _dbSet
+            .Include(b => b.Room)
+                .ThenInclude(r => r.Category)
+            .ToListAsync();
+    }
+
     public async Task<bool> HasOverlappingBookingAsync(Guid roomId, DateTime startDate, DateTime endDate)
     {
         return await _dbSet.AnyAsync(b =>
@@ -19,6 +27,10 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
 
     public async Task<IEnumerable<Booking>> GetBookingsByRoomAsync(Guid roomId)
     {
-        return await _dbSet.Where(b => b.RoomId == roomId).ToListAsync();
+        return await _dbSet
+                .Include(b => b.Room)
+                    .ThenInclude(r => r.Category)
+                .Where(b => b.RoomId == roomId)
+                .ToListAsync();
     }
 }

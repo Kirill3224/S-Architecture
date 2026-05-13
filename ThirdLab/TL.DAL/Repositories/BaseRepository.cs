@@ -16,12 +16,12 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         _dbSet = _context.Set<T>();
     }
 
-    public async Task<T?> GetByIdAsync(Guid id)
+    public async virtual Task<T?> GetByIdAsync(Guid id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async virtual Task<IEnumerable<T>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();
     }
