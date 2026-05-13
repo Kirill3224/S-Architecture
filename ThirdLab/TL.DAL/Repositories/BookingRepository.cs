@@ -17,12 +17,13 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
             .ToListAsync();
     }
 
-    public async Task<bool> HasOverlappingBookingAsync(Guid roomId, DateTime startDate, DateTime endDate)
+    public async Task<bool> HasOverlappingBookingAsync(Guid roomId, DateTime startDate, DateTime endDate, Guid? id)
     {
         return await _dbSet.AnyAsync(b =>
                 b.RoomId == roomId &&
                 b.StartDate < endDate &&
-                b.EndDate > startDate);
+                b.EndDate > startDate &&
+                b.Id != id);
     }
 
     public async Task<IEnumerable<Booking>> GetBookingsByRoomAsync(Guid roomId)

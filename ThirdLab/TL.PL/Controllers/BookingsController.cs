@@ -29,7 +29,7 @@ public class BookingsController : ControllerBase
         return Ok(new { message = "Booking was deleted successfully." });
     }
 
-    [HttpPut]
+    [HttpPatch]
     public async Task<IActionResult> Update(UpdateBookingRequest request)
     {
         await _bookingService.UpdateAsync(request);

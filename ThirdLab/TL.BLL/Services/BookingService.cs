@@ -28,7 +28,7 @@ public class BookingService : BaseService, IBookingService
         var endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
 
         bool isOccupied = await _unitOfWork.Bookings.HasOverlappingBookingAsync(
-                                request.RoomId, startDate, endDate);
+                                request.RoomId, startDate, endDate, null);
 
         if (isOccupied)
             throw new InvalidOperationException("This room is already taken by someone else.");
@@ -58,27 +58,31 @@ public class BookingService : BaseService, IBookingService
         var booking = await _unitOfWork.Bookings.GetByIdAsync(request.Id)
                         ?? throw new KeyNotFoundException($"Booking with ID {request.Id} is not found.");
 
-        bool hasChanges = false;
+        DateTime actualStart = request.StartDate.HasValue
+            ? DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Utc)
+            : booking.StartDate;
 
-        if (request.GuestName != booking.GuestName)
+        DateTime actualEnd = request.EndDate.HasValue
+            ? DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Utc)
+            : booking.EndDate;
+
+        if (actualEnd <= actualStart)
         {
-            booking.CorrectGuestName(request.GuestName);
-            hasChanges = true;
+            throw new InvalidOperationException("End date cannot be earlier than start date.");
         }
 
-        if (request.StartDate != booking.StartDate)
+        if (request.StartDate.HasValue || request.EndDate.HasValue)
         {
-            booking.CorrectStartDate(request.StartDate);
-            hasChanges = true;
+            bool isOccupied = await _unitOfWork.Bookings.HasOverlappingBookingAsync(
+                booking.RoomId, actualStart, actualEnd, booking.Id);
+
+            if (isOccupied) throw new InvalidOperationException("Room is occupied for these new dates.");
         }
 
-        if (request.EndDate != booking.EndDate)
-        {
-            booking.CorrectEndDate(request.EndDate);
-            hasChanges = true;
-        }
+        if (request.GuestName != null) booking.CorrectGuestName(request.GuestName);
 
-        if (!hasChanges) return;
+        if (request.StartDate.HasValue) booking.CorrectStartDate(actualStart);
+        if (request.EndDate.HasValue) booking.CorrectEndDate(actualEnd);
 
         _unitOfWork.Bookings.Update(booking);
         await _unitOfWork.SaveChangesAsync();
