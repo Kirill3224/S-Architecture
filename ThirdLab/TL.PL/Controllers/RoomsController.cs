@@ -29,7 +29,7 @@ public class RoomsController : ControllerBase
         return Ok(new { message = "Room deleted successfully." });
     }
 
-    [HttpPut]
+    [HttpPatch]
     public async Task<IActionResult> Update(UpdateRoomRequest request)
     {
         await _roomService.UpdateAsync(request);

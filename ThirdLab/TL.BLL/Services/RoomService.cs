@@ -47,20 +47,22 @@ public class RoomService : BaseService, IRoomService
         var room = await _unitOfWork.Rooms.GetByIdAsync(request.Id)
                     ?? throw new KeyNotFoundException($"Room with ID {request.Id} is not found.");
 
-        var status = Enum.Parse<RoomStatus>(request.Status, ignoreCase: true);
-
         bool hasChanges = false;
 
-        if (request.Number != room.Number)
+        if (request.Number != null && request.Number != room.Number)
         {
             room.CorrectNumber(request.Number);
             hasChanges = true;
         }
 
-        if (status != room.Status)
+        if (request.Status != null)
         {
-            room.CorrectStatus(status);
-            hasChanges = true;
+            var status = Enum.Parse<RoomStatus>(request.Status, ignoreCase: true);
+            if (status != room.Status)
+            {
+                room.CorrectStatus(status);
+                hasChanges = true;
+            }
         }
 
         if (!hasChanges) return;
