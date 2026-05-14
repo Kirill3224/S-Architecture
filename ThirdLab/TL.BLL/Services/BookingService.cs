@@ -2,6 +2,7 @@ using TL.BLL.Interfaces;
 using TL.DAL.Interfaces;
 using TL.BLL.DTOs;
 using TL.DAL.Entities;
+using TL.DAL.Enums;
 using AutoMapper;
 
 namespace TL.BLL.Services;
@@ -35,6 +36,11 @@ public class BookingService : BaseService, IBookingService
 
         var room = await _unitOfWork.Rooms.GetByIdAsync(request.RoomId)
                ?? throw new KeyNotFoundException($"Room with ID {request.RoomId} is not found.");
+
+        if (room.Status == RoomStatus.Occupied && startDate.Date <= DateTime.UtcNow)
+        {
+            throw new InvalidOperationException("Cannot book this room: it is currently occupied by a guest.");
+        }
 
         var booking = Booking.Create(
             room,
