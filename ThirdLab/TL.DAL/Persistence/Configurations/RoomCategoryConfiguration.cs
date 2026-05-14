@@ -17,6 +17,8 @@ public class RoomCategoryConfiguration : IEntityTypeConfiguration<RoomCategory>
         builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
         builder.Property(c => c.PricePerNight).IsRequired().HasColumnType("decimal(18,2)");
 
+        builder.HasIndex(c => c.Name).IsUnique();
+
         builder.HasMany(c => c.Rooms)
                 .WithOne(r => r.Category)
                 .HasForeignKey(r => r.CategoryId)

@@ -17,6 +17,8 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.Property(r => r.Number).IsRequired().HasMaxLength(100);
         builder.Property(r => r.Status).IsRequired().HasConversion<string>().HasMaxLength(20);
 
+        builder.HasIndex(r => r.Number).IsUnique();
+
         builder.HasMany(r => r.Bookings)
                 .WithOne(b => b.Room)
                 .HasForeignKey(b => b.RoomId)
