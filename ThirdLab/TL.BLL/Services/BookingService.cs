@@ -93,7 +93,8 @@ public class BookingService : BaseService, IBookingService
         var booking = await _unitOfWork.Bookings.GetByIdAsync(bookingId)
                 ?? throw new KeyNotFoundException($"Booking with ID {bookingId} is not found.");
 
-        var room = await _unitOfWork.Rooms.GetByIdAsync(booking.RoomId);
+        var room = await _unitOfWork.Rooms.GetByIdAsync(booking.RoomId)
+                ?? throw new KeyNotFoundException($"Room with ID {booking.RoomId} is not found.");
 
         room?.MarkAsFree();
 

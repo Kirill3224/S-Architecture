@@ -6,7 +6,7 @@ public interface IRoomCategoryService
 {
     Task<Guid> CreateAsync(CreateRoomCategoryRequest request);
     Task UpdateAsync(UpdateRoomCategoryRequest request);
-    Task DeleteAsync(Guid roomCategoryId);
-    Task<RoomCategoryResponse?> GetByIdAsync(Guid roomCategoryId);
+    Task DeleteAsync(Guid categoryId);
+    Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId);
     Task<List<RoomCategoryResponse>> GetAllAsync();
 }

@@ -31,4 +31,14 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository
                     b.StartDate < endDate && b.EndDate > startDate))
                 .ToListAsync();
     }
+
+    public async Task<bool> ExistsByNumberAsync(string number, Guid? id = null)
+    {
+        return await _dbSet.AnyAsync(r => r.Number == number && r.Id != id);
+    }
+
+    public async Task<bool> HasAnyForCategoryAsync(Guid categoryId)
+    {
+        return await _dbSet.AnyAsync(r => r.CategoryId == categoryId);
+    }
 }

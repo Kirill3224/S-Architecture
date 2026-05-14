@@ -26,6 +26,9 @@ public class RoomService : BaseService, IRoomService
     {
         await ValidateAsync(request);
 
+        if (await _unitOfWork.Rooms.ExistsByNumberAsync(request.Number))
+            throw new InvalidOperationException($"Room with number {request.Number} already exists.");
+
         var status = Enum.Parse<RoomStatus>(request.Status, ignoreCase: true);
 
         var room = Room.Create(
@@ -51,6 +54,9 @@ public class RoomService : BaseService, IRoomService
 
         if (request.Number != null && request.Number != room.Number)
         {
+            if (await _unitOfWork.Rooms.ExistsByNumberAsync(request.Number, room.Id))
+                throw new InvalidOperationException($"Room with number {request.Number} already exists.");
+
             room.CorrectNumber(request.Number);
             hasChanges = true;
         }
@@ -76,7 +82,8 @@ public class RoomService : BaseService, IRoomService
         var room = await _unitOfWork.Rooms.GetByIdAsync(roomId)
                     ?? throw new KeyNotFoundException($"Room with ID {roomId} is not found.");
 
-
+        if (await _unitOfWork.Bookings.HasAnyForRoomAsync(room.Id))
+            throw new InvalidOperationException("Cannot delete room with active booking.");
 
         _unitOfWork.Rooms.Delete(room);
         await _unitOfWork.SaveChangesAsync();

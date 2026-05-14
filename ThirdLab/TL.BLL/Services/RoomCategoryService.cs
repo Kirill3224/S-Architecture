@@ -24,6 +24,9 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
     {
         await ValidateAsync(request);
 
+        if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name))
+            throw new InvalidOperationException($"Category with name {request.Name} already exists.");
+
         var category = RoomCategory.Create(
             request.Name,
             request.PricePerNight
@@ -46,6 +49,9 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
 
         if (request.Name != null && request.Name != category.Name)
         {
+            if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name, category.Id))
+                throw new InvalidOperationException($"Category with name {request.Name} already exists.");
+
             category.CorrectName(request.Name);
             hasChanges = true;
         }
@@ -62,19 +68,22 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid roomCategoryId)
+    public async Task DeleteAsync(Guid categoryId)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(roomCategoryId)
-                ?? throw new KeyNotFoundException($"Category with ID {roomCategoryId} is not found.");
+        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId)
+                ?? throw new KeyNotFoundException($"Category with ID {categoryId} is not found.");
+
+        if (await _unitOfWork.Rooms.HasAnyForCategoryAsync(categoryId))
+            throw new InvalidOperationException("Cannot delete category with rooms.");
 
         _unitOfWork.Categories.Delete(category);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<RoomCategoryResponse?> GetByIdAsync(Guid roomCategoryId)
+    public async Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(roomCategoryId)
-                        ?? throw new KeyNotFoundException($"Category with ID {roomCategoryId} is not found.");
+        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId)
+                        ?? throw new KeyNotFoundException($"Category with ID {categoryId} is not found.");
 
         return _mapper.Map<RoomCategoryResponse>(category);
     }

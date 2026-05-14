@@ -26,6 +26,11 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
                 b.Id != id);
     }
 
+    public async Task<bool> HasAnyForRoomAsync(Guid roomId)
+    {
+        return await _dbSet.AnyAsync(b => b.RoomId == roomId);
+    }
+
     public async Task<IEnumerable<Booking>> GetBookingsByRoomAsync(Guid roomId)
     {
         return await _dbSet
