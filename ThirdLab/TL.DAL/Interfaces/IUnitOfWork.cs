@@ -1,11 +1,13 @@
-using TL.DAL.Entities;
-
 namespace TL.DAL.Interfaces;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IAsyncDisposable
 {
-    public IRoomCategoryRepository Categories { get; }
-    public IRoomRepository Rooms { get; }
-    public IBookingRepository Bookings { get; }
+    IRoomCategoryRepository Categories { get; }
+    IRoomRepository Rooms { get; }
+    IBookingRepository Bookings { get; }
+
     Task<int> SaveChangesAsync();
+    Task BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    Task RollbackTransactionAsync();
 }
