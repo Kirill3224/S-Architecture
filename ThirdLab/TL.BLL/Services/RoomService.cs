@@ -37,10 +37,19 @@ public class RoomService : BaseService, IRoomService
             status
         );
 
-        await _unitOfWork.Rooms.AddAsync(room);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            await _unitOfWork.Rooms.AddAsync(room);
+            await _unitOfWork.CommitTransactionAsync();
 
-        return room.Id;
+            return room.Id;
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task UpdateAsync(UpdateRoomRequest request)
@@ -73,8 +82,17 @@ public class RoomService : BaseService, IRoomService
 
         if (!hasChanges) return;
 
-        _unitOfWork.Rooms.Update(room);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Rooms.Update(room);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(Guid roomId)
@@ -85,8 +103,17 @@ public class RoomService : BaseService, IRoomService
         if (await _unitOfWork.Bookings.HasAnyForRoomAsync(room.Id))
             throw new InvalidOperationException("Cannot delete room with active booking.");
 
-        _unitOfWork.Rooms.Delete(room);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Rooms.Delete(room);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task<RoomResponse?> GetByIdAsync(Guid roomId)

@@ -14,6 +14,10 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IRoomCategoryRepository, RoomCategoryRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

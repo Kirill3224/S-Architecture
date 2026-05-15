@@ -51,8 +51,17 @@ public class BookingService : BaseService, IBookingService
 
         room.MarkAsBooked();
 
-        await _unitOfWork.Bookings.AddAsync(booking);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            await _unitOfWork.Bookings.AddAsync(booking);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
 
         return _mapper.Map<BookingResponse>(booking);
     }
@@ -90,8 +99,17 @@ public class BookingService : BaseService, IBookingService
         if (request.StartDate.HasValue) booking.CorrectStartDate(actualStart);
         if (request.EndDate.HasValue) booking.CorrectEndDate(actualEnd);
 
-        _unitOfWork.Bookings.Update(booking);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Bookings.Update(booking);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(Guid bookingId)
@@ -104,8 +122,17 @@ public class BookingService : BaseService, IBookingService
 
         room?.MarkAsFree();
 
-        _unitOfWork.Bookings.Delete(booking);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Bookings.Delete(booking);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task<BookingResponse?> GetByIdAsync(Guid bookingId)

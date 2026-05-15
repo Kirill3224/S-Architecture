@@ -32,10 +32,19 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
             request.PricePerNight
         );
 
-        await _unitOfWork.Categories.AddAsync(category);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            await _unitOfWork.Categories.AddAsync(category);
+            await _unitOfWork.CommitTransactionAsync();
 
-        return category.Id;
+            return category.Id;
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task UpdateAsync(UpdateRoomCategoryRequest request)
@@ -64,8 +73,17 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
 
         if (!hasChanges) return;
 
-        _unitOfWork.Categories.Update(category);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Categories.Update(category);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(Guid categoryId)
@@ -76,8 +94,17 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
         if (await _unitOfWork.Rooms.HasAnyForCategoryAsync(categoryId))
             throw new InvalidOperationException("Cannot delete category with rooms.");
 
-        _unitOfWork.Categories.Delete(category);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            _unitOfWork.Categories.Delete(category);
+            await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId)
