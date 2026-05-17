@@ -4,9 +4,9 @@ namespace TL.BLL.Interfaces;
 
 public interface IRoomService
 {
-    Task<Guid> CreateAsync(CreateRoomRequest request);
-    Task UpdateAsync(UpdateRoomRequest request);
-    Task DeleteAsync(Guid roomId);
-    Task<RoomResponse?> GetByIdAsync(Guid roomId);
-    Task<List<RoomResponse>> GetAllAsync();
+    Task<Guid> CreateAsync(CreateRoomRequest request, CancellationToken cancellationToken = default);
+    Task UpdateAsync(UpdateRoomRequest request, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Guid roomId, CancellationToken cancellationToken = default);
+    Task<RoomResponse?> GetByIdAsync(Guid roomId, CancellationToken cancellationToken = default);
+    Task<List<RoomResponse>> GetAllAsync(CancellationToken cancellationToken = default);
 }

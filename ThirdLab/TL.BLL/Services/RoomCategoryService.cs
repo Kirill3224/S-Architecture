@@ -20,11 +20,11 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
         _mapper = mapper;
     }
 
-    public async Task<Guid> CreateAsync(CreateRoomCategoryRequest request)
+    public async Task<Guid> CreateAsync(CreateRoomCategoryRequest request, CancellationToken cancellationToken)
     {
         await ValidateAsync(request);
 
-        if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name))
+        if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name, cancellationToken))
             throw new InvalidOperationException($"Category with name {request.Name} already exists.");
 
         var category = RoomCategory.Create(
@@ -32,33 +32,33 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
             request.PricePerNight
         );
 
-        await _unitOfWork.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            await _unitOfWork.Categories.AddAsync(category);
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.Categories.AddAsync(category, cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return category.Id;
         }
         catch
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
             throw;
         }
     }
 
-    public async Task UpdateAsync(UpdateRoomCategoryRequest request)
+    public async Task UpdateAsync(UpdateRoomCategoryRequest request, CancellationToken cancellationToken)
     {
         await ValidateAsync(request);
 
-        var category = await _unitOfWork.Categories.GetByIdAsync(request.Id)
+        var category = await _unitOfWork.Categories.GetByIdAsync(request.Id, cancellationToken)
                         ?? throw new KeyNotFoundException($"Category with ID {request.Id} is not found.");
 
         bool hasChanges = false;
 
         if (request.Name != null && request.Name != category.Name)
         {
-            if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name, category.Id))
+            if (await _unitOfWork.Categories.ExistsByNameAsync(request.Name, cancellationToken, category.Id))
                 throw new InvalidOperationException($"Category with name {request.Name} already exists.");
 
             category.CorrectName(request.Name);
@@ -73,51 +73,51 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
 
         if (!hasChanges) return;
 
-        await _unitOfWork.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             _unitOfWork.Categories.Update(category);
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
         catch
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
             throw;
         }
     }
 
-    public async Task DeleteAsync(Guid categoryId)
+    public async Task DeleteAsync(Guid categoryId, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId)
+        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId, cancellationToken)
                 ?? throw new KeyNotFoundException($"Category with ID {categoryId} is not found.");
 
-        if (await _unitOfWork.Rooms.HasAnyForCategoryAsync(categoryId))
+        if (await _unitOfWork.Rooms.HasAnyForCategoryAsync(categoryId, cancellationToken))
             throw new InvalidOperationException("Cannot delete category with rooms.");
 
-        await _unitOfWork.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             _unitOfWork.Categories.Delete(category);
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
         catch
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
             throw;
         }
     }
 
-    public async Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId)
+    public async Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId)
+        var category = await _unitOfWork.Categories.GetByIdAsync(categoryId, cancellationToken)
                         ?? throw new KeyNotFoundException($"Category with ID {categoryId} is not found.");
 
         return _mapper.Map<RoomCategoryResponse>(category);
     }
 
-    public async Task<List<RoomCategoryResponse>> GetAllAsync()
+    public async Task<List<RoomCategoryResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var categories = await _unitOfWork.Categories.GetAllAsync();
+        var categories = await _unitOfWork.Categories.GetAllAsync(cancellationToken);
 
         return _mapper.Map<List<RoomCategoryResponse>>(categories);
     }

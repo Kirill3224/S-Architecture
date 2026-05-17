@@ -9,7 +9,14 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
 {
     public BookingRepository(AppDbContext context) : base(context) { }
 
-    public override async Task<IEnumerable<Booking>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override async Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbSet
+                .Include(b => b.Room)
+                .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+    }
+
+    public override async Task<IEnumerable<Booking>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _dbSet
             .Include(b => b.Room)
@@ -17,7 +24,7 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> HasOverlappingBookingAsync(Guid roomId, DateTime startDate, DateTime endDate, Guid? id, CancellationToken cancellationToken = default)
+    public async Task<bool> HasOverlappingBookingAsync(Guid roomId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken, Guid? id = null)
     {
         return await _dbSet.AnyAsync(b =>
                 b.RoomId == roomId &&
@@ -32,7 +39,7 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
         return await _dbSet.AnyAsync(b => b.RoomId == roomId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Booking>> GetBookingsByRoomAsync(Guid roomId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Booking>> GetBookingsByRoomAsync(Guid roomId, CancellationToken cancellationToken)
     {
         return await _dbSet
                 .Include(b => b.Room)

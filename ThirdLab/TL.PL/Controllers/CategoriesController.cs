@@ -16,39 +16,41 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<RoomCategoryResponse>> Create([FromBody] CreateRoomCategoryRequest request)
+    public async Task<ActionResult<RoomCategoryResponse>> Create(CreateRoomCategoryRequest request, CancellationToken cancellationToken)
     {
-        var id = await _categoryService.CreateAsync(request);
+        var id = await _categoryService.CreateAsync(request, cancellationToken);
 
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        var categoryResponse = await _categoryService.GetByIdAsync(id, cancellationToken);
+
+        return CreatedAtAction(nameof(GetById), new { id }, categoryResponse);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _categoryService.DeleteAsync(id);
-        return Ok(new { message = "Category deleted successfully." });
+        await _categoryService.DeleteAsync(id, cancellationToken);
+        return NoContent();
     }
 
     [HttpPatch]
-    public async Task<IActionResult> Update(UpdateRoomCategoryRequest request)
+    public async Task<IActionResult> Update(UpdateRoomCategoryRequest request, CancellationToken cancellationToken)
     {
-        await _categoryService.UpdateAsync(request);
-        return Ok(new { message = "Category updated successfully." });
+        await _categoryService.UpdateAsync(request, cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<RoomCategoryResponse>> GetById(Guid id)
+    public async Task<ActionResult<RoomCategoryResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var category = await _categoryService.GetByIdAsync(id);
+        var category = await _categoryService.GetByIdAsync(id, cancellationToken);
 
         return Ok(category);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RoomCategoryResponse>>> GetAll()
+    public async Task<ActionResult<IEnumerable<RoomCategoryResponse>>> GetAll(CancellationToken cancellationToken)
     {
-        var categories = await _categoryService.GetAllAsync();
+        var categories = await _categoryService.GetAllAsync(cancellationToken);
         return Ok(categories);
     }
 }

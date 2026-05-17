@@ -16,37 +16,40 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<RoomResponse>> Create(CreateRoomRequest request)
+    public async Task<ActionResult<RoomResponse>> Create(CreateRoomRequest request, CancellationToken cancellationToken)
     {
-        var id = await _roomService.CreateAsync(request);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        var id = await _roomService.CreateAsync(request, cancellationToken);
+
+        var roomResponse = await _roomService.GetByIdAsync(id, cancellationToken);
+
+        return CreatedAtAction(nameof(GetById), new { id }, roomResponse);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _roomService.DeleteAsync(id);
-        return Ok(new { message = "Room deleted successfully." });
+        await _roomService.DeleteAsync(id, cancellationToken);
+        return NoContent();
     }
 
     [HttpPatch]
-    public async Task<IActionResult> Update(UpdateRoomRequest request)
+    public async Task<IActionResult> Update(UpdateRoomRequest request, CancellationToken cancellationToken)
     {
-        await _roomService.UpdateAsync(request);
-        return Ok(new { message = "Room updated successfully" });
+        await _roomService.UpdateAsync(request, cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<RoomResponse>> GetById(Guid id)
+    public async Task<ActionResult<RoomResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var room = await _roomService.GetByIdAsync(id);
+        var room = await _roomService.GetByIdAsync(id, cancellationToken);
         return Ok(room);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAll()
+    public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAll(CancellationToken cancellationToken)
     {
-        var rooms = await _roomService.GetAllAsync();
+        var rooms = await _roomService.GetAllAsync(cancellationToken);
         return Ok(rooms);
     }
 }

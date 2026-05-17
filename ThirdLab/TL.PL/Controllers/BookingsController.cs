@@ -16,44 +16,51 @@ public class BookingsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookingResponse>> Create(CreateBookingRequest request)
+    public async Task<ActionResult<BookingResponse>> Create(CreateBookingRequest request, CancellationToken cancellationToken)
     {
-        var booking = await _bookingService.CreateAsync(request);
-        return CreatedAtAction(nameof(GetAll), new { id = booking.Id }, booking);
+        var booking = await _bookingService.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = booking.Id }, booking);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _bookingService.DeleteAsync(id);
-        return Ok(new { message = "Booking was deleted successfully." });
+        await _bookingService.DeleteAsync(id, cancellationToken);
+        return NoContent();
     }
 
     [HttpPatch]
-    public async Task<IActionResult> Update(UpdateBookingRequest request)
+    public async Task<IActionResult> Update(UpdateBookingRequest request, CancellationToken cancellationToken)
     {
-        await _bookingService.UpdateAsync(request);
-        return Ok(new { message = "Booking was updated successfully." });
+        await _bookingService.UpdateAsync(request, cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("available")]
-    public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAvailable([FromQuery] SearchAvailableRoomsRequest request)
+    public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAvailable([FromQuery] SearchAvailableRoomsRequest request, CancellationToken cancellationToken)
     {
-        var rooms = await _bookingService.GetAvailableRoomsAsync(request);
+        var rooms = await _bookingService.GetAvailableRoomsAsync(request, cancellationToken);
         return Ok(rooms);
     }
 
-    [HttpGet("room")]
-    public async Task<ActionResult<IEnumerable<BookingResponse>>> GetByRoom([FromQuery] Guid roomId)
+    [HttpGet("room/{roomId:guid}")]
+    public async Task<ActionResult<IEnumerable<BookingResponse>>> GetByRoom([FromRoute] Guid roomId, CancellationToken cancellationToken)
     {
-        var booking = await _bookingService.GetBookingsByRoomAsync(roomId);
+        var booking = await _bookingService.GetBookingsByRoomAsync(roomId, cancellationToken);
+        return Ok(booking);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<BookingResponse>> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var booking = await _bookingService.GetByIdAsync(id, cancellationToken);
         return Ok(booking);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookingResponse>>> GetAll()
+    public async Task<ActionResult<IEnumerable<BookingResponse>>> GetAll(CancellationToken cancellationToken)
     {
-        var bookings = await _bookingService.GetAllAsync();
+        var bookings = await _bookingService.GetAllAsync(cancellationToken);
         return Ok(bookings);
     }
 }
