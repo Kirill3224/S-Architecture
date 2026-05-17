@@ -9,8 +9,8 @@ public class RoomCategoryRepository : BaseRepository<RoomCategory>, IRoomCategor
 {
     public RoomCategoryRepository(AppDbContext context) : base(context) { }
 
-    public async Task<bool> ExistsByNameAsync(string name, Guid? id = null)
+    public async Task<bool> ExistsByNameAsync(string name, Guid? id = null, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.AnyAsync(rc => rc.Name == name && rc.Id != id);
+        return await _dbSet.AnyAsync(rc => rc.Name == name && rc.Id != id, cancellationToken);
     }
 }

@@ -16,19 +16,19 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         _dbSet = _context.Set<T>();
     }
 
-    public async virtual Task<T?> GetByIdAsync(Guid id)
+    public async virtual Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FindAsync(id);
+        return await _dbSet.FindAsync(id, cancellationToken);
     }
 
-    public async virtual Task<IEnumerable<T>> GetAllAsync()
+    public async virtual Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet.ToListAsync(cancellationToken);
     }
 
-    public async Task<Guid> AddAsync(T item)
+    public async Task<Guid> AddAsync(T item, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(item);
+        await _dbSet.AddAsync(item, cancellationToken);
         return item.Id;
     }
 
