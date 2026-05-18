@@ -32,19 +32,10 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
             request.PricePerNight
         );
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            await _unitOfWork.Categories.AddAsync(category, cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.Categories.AddAsync(category, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return category.Id;
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        return category.Id;
     }
 
     public async Task UpdateAsync(UpdateRoomCategoryRequest request, CancellationToken cancellationToken)
@@ -73,17 +64,8 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
 
         if (!hasChanges) return;
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Categories.Update(category);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        _unitOfWork.Categories.Update(category);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(Guid categoryId, CancellationToken cancellationToken)
@@ -94,17 +76,8 @@ public class RoomCategoryService : BaseService, IRoomCategoryService
         if (await _unitOfWork.Rooms.HasAnyForCategoryAsync(categoryId, cancellationToken))
             throw new InvalidOperationException("Cannot delete category with rooms.");
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Categories.Delete(category);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        _unitOfWork.Categories.Delete(category);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<RoomCategoryResponse?> GetByIdAsync(Guid categoryId, CancellationToken cancellationToken)

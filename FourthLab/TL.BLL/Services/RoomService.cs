@@ -36,19 +36,10 @@ public class RoomService : BaseService, IRoomService
             status
         );
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            await _unitOfWork.Rooms.AddAsync(room, cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.Rooms.AddAsync(room, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return room.Id;
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        return room.Id;
     }
 
     public async Task UpdateAsync(UpdateRoomRequest request, CancellationToken cancellationToken)
@@ -81,17 +72,8 @@ public class RoomService : BaseService, IRoomService
 
         if (!hasChanges) return;
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Rooms.Update(room);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        _unitOfWork.Rooms.Update(room);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(Guid roomId, CancellationToken cancellationToken)
@@ -102,17 +84,8 @@ public class RoomService : BaseService, IRoomService
         if (await _unitOfWork.Bookings.HasAnyForRoomAsync(room.Id, cancellationToken))
             throw new InvalidOperationException("Cannot delete room with active booking.");
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Rooms.Delete(room);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        _unitOfWork.Rooms.Delete(room);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<RoomResponse?> GetByIdAsync(Guid roomId, CancellationToken cancellationToken)

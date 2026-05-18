@@ -51,17 +51,9 @@ public class BookingService : BaseService, IBookingService
 
         room.MarkAsBooked();
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            await _unitOfWork.Bookings.AddAsync(booking, cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+
+        await _unitOfWork.Bookings.AddAsync(booking, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<BookingResponse>(booking);
     }
@@ -99,17 +91,9 @@ public class BookingService : BaseService, IBookingService
         if (request.StartDate.HasValue) booking.CorrectStartDate(actualStart);
         if (request.EndDate.HasValue) booking.CorrectEndDate(actualEnd);
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Bookings.Update(booking);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+
+        _unitOfWork.Bookings.Update(booking);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(Guid bookingId, CancellationToken cancellationToken)
@@ -122,17 +106,8 @@ public class BookingService : BaseService, IBookingService
 
         room?.MarkAsFree();
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            _unitOfWork.Bookings.Delete(booking);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync(CancellationToken.None);
-            throw;
-        }
+        _unitOfWork.Bookings.Delete(booking);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<BookingResponse?> GetByIdAsync(Guid bookingId, CancellationToken cancellationToken)
